@@ -13,7 +13,7 @@ class ShoppingRepository {
             const orders = await OrderModel.find({customerId }).populate('items.product');        
             return orders;
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Orders')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Orders')
         }
     }
  
@@ -64,7 +64,7 @@ class ShoppingRepository {
           return {}
 
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Category')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Category')
         }
         
 

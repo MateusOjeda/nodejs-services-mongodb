@@ -16,7 +16,7 @@ class CustomerRepository {
             const customerResult = await customer.save();
             return customerResult;
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
         }
     }
     
@@ -42,7 +42,7 @@ class CustomerRepository {
             return await profile.save();
 
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Error on Create Address')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Error on Create Address')
         }
     }
 
@@ -51,7 +51,7 @@ class CustomerRepository {
             const existingCustomer = await CustomerModel.findOne({ email: email });
             return existingCustomer;
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Customer')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Customer')
         }
     }
 
@@ -65,7 +65,7 @@ class CustomerRepository {
             .populate('cart.product');
             return existingCustomer;
         } catch (err) {
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Customer');
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Customer');
         }
     }
 
@@ -75,7 +75,7 @@ class CustomerRepository {
            
             return profile.wishlist;
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Get Wishlist ')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Get Wishlist ')
         }
     }
 
@@ -114,7 +114,7 @@ class CustomerRepository {
             return profileResult.wishlist;
 
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Add to WishList')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Add to WishList')
         }
 
     }
@@ -165,7 +165,7 @@ class CustomerRepository {
             throw new Error('Unable to add to cart!');
 
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
         }
 
     }
@@ -193,7 +193,7 @@ class CustomerRepository {
             throw new Error('Unable to add to order!');
 
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
         }
         
     }

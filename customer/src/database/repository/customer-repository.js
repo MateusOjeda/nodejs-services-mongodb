@@ -16,7 +16,8 @@ class CustomerRepository {
             const customerResult = await customer.save();
             return customerResult;
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
+            console.log(err)
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
         }
     }
     
@@ -42,7 +43,7 @@ class CustomerRepository {
             return await profile.save();
 
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Error on Create Address')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Error on Create Address')
         }
     }
 
@@ -51,21 +52,17 @@ class CustomerRepository {
             const existingCustomer = await CustomerModel.findOne({ email: email });
             return existingCustomer;
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Customer')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Customer')
         }
     }
 
     async FindCustomerById({ id }){
 
         try {
-            const existingCustomer = await CustomerModel.findById(id)
-            .populate('address')
-            .populate('wishlist')
-            .populate('orders')
-            .populate('cart.product');
+            const existingCustomer = await CustomerModel.findById(id).populate('address');
             return existingCustomer;
         } catch (err) {
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Customer');
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Customer');
         }
     }
 
@@ -75,12 +72,16 @@ class CustomerRepository {
            
             return profile.wishlist;
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Get Wishlist ')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Get Wishlist ')
         }
     }
 
-    async AddWishlistItem(customerId, product){
+    async AddWishlistItem(customerId, {_id, name, desc, price, avaiable, banner}){
         
+        const product = {
+            _id, name, desc, price, avaiable, banner
+        }
+
         try{
             const profile = await CustomerModel.findById(customerId).populate('wishlist');
            
@@ -114,59 +115,60 @@ class CustomerRepository {
             return profileResult.wishlist;
 
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Add to WishList')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Add to WishList')
         }
 
     }
 
 
-    async AddCartItem(customerId, product, qty, isRemove){
+    async AddCartItem(customerId, {_id, name, price, banner}, qty, isRemove){
 
-        try{
+ 
+        const profile = await CustomerModel.findById(customerId).populate('cart');
+        const profile2 = await CustomerModel.findById(customerId);
 
-            const profile = await CustomerModel.findById(customerId).populate('cart.product');
-    
-            if(profile){ 
-     
-                const cartItem = {
-                    product,
-                    unit: qty,
-                };
-              
-                let cartItems = profile.cart;
-                
-                if(cartItems.length > 0){
-                    let isExist = false;
-                     cartItems.map(item => {
-                        if(item.product._id.toString() === product._id.toString()){
-                            if(isRemove){
-                                cartItems.splice(cartItems.indexOf(item), 1);
-                            }else{
-                                item.unit = qty;
-                            }
-                            isExist = true;
-                        }
-                    });
-    
-                    if(!isExist){
-                        cartItems.push(cartItem);
-                    } 
-                }else{
-                    cartItems.push(cartItem);
-                }
-    
-                profile.cart = cartItems;
-    
-                const cartSaveResult = await profile.save();
+        console.log(profile)
+        console.log(profile2)
+        console.log(customerId)
 
-                return cartSaveResult.cart;
-            }
+        if(profile){ 
+ 
+            const cartItem = {
+                product: { _id, name, price, banner },
+                unit: qty,
+            };
+          
+            let cartItems = profile.cart;
             
-            throw new Error('Unable to add to cart!');
+            if(cartItems.length > 0){
+                let isExist = false;
+                 cartItems.map(item => {
+                    if(item.product._id.toString() === _id.toString()){
 
-        }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
+                        if(isRemove){
+                            cartItems.splice(cartItems.indexOf(item), 1);
+                        }else{
+                            item.unit = qty;
+                        }
+                        isExist = true;
+                    }
+                });
+
+                if(!isExist){
+                    cartItems.push(cartItem);
+                } 
+            }else{
+                cartItems.push(cartItem);
+            }
+
+            profile.cart = cartItems;
+
+            return await profile.save();
         }
+        
+        console.log(profile)
+
+        throw new Error('Unable to add to cart!');
 
     }
 
@@ -193,7 +195,7 @@ class CustomerRepository {
             throw new Error('Unable to add to order!');
 
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
         }
         
     }

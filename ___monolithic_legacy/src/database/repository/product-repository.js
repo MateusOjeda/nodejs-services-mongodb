@@ -16,7 +16,7 @@ class ProductRepository {
             return productResult;
             
         } catch (err) {
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Product')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Product')
         }
         
     }
@@ -26,7 +26,7 @@ class ProductRepository {
          try{
              return await ProductModel.find();
          }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Get Products')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Get Products')
          }
     }
    
@@ -34,7 +34,7 @@ class ProductRepository {
         try{
             return await ProductModel.findById(id);
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Product')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Product')
         }
 
     }
@@ -46,7 +46,7 @@ class ProductRepository {
              return products;
             
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Category')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Category')
         }
     }
 
@@ -55,7 +55,7 @@ class ProductRepository {
             const products = await ProductModel.find().where('_id').in(selectedIds.map(_id => _id)).exec();
             return products;
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Product')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Find Product')
         }
        
     }

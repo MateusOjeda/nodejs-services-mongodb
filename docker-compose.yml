@@ -1,12 +1,38 @@
-version: '3.9'
+version: '3'
 
 services:
-  mongodb:
-    image: mongo:5.0
+  mongo-express:
+    image: mongo-express
     ports:
-      - 27017:27017
-    volumes:
-      - ~/apps/mongo:/data/db
+      - 8081:8081
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=citizix
-      - MONGO_INITDB_ROOT_PASSWORD=S3cret
+      ME_CONFIG_BASICAUTH_USERNAME: mojeda
+      ME_CONFIG_BASICAUTH_PASSWORD: 8521
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: MongoDB!
+      ME_CONFIG_MONGODB_SERVER: mongo
+    links:
+      - mongo
+    networks:
+      - mongo-compose-network
+    restart: always
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: MongoDB!
+    ports:
+      - "27017:27017"
+    volumes:
+      - /home/mateus/dev/nodejs_micro/data:/data/db
+    networks:
+      - mongo-compose-network
+    restart: always
+
+networks: 
+    mongo-compose-network:
+      driver: bridge

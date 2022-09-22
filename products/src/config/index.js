@@ -11,6 +11,8 @@ module.exports = {
 
     PORT: process.env.PORT,
     DB_URL: process.env.MONGODB_URI,
-    APP_SECRET: process.env.APP_SECRET
+    APP_SECRET: process.env.APP_SECRET,
+    DB_USER: process.env.DB_USER,
+    DB_PASS: process.env.DB_PASS 
 }
  
